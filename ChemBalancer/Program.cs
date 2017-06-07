@@ -14,7 +14,22 @@ namespace ChemBalancer {
 		}
 
 		public void CommandLineHandler() {
-
+			Console.WriteLine("ChemBalancer\n(c) Copyright 2017");
+			while (true) {
+				Console.WriteLine("\nCommand:");
+				var line_input = Console.ReadLine().ToLower();
+				switch(line_input) {
+					case "help":
+						Console.WriteLine("> Balance\n"+"> Check");
+						break;
+					case "balance":
+						Balancer bal = new Balancer();
+						bal.BalanceEquation();
+						break;
+					case "check":
+						break;
+				}
+			}
 		}
 	}
 }
