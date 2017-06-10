@@ -33,9 +33,9 @@ namespace ChemBalancer {
 				var atom = e[i].Replace("^" + num, "");
 
 				Elements.Add(new Element(atom, Convert.ToInt32(num)));
-				Console.WriteLine(Elements[i-1].Atom + ":" + Elements[i-1].Count);
+				//Console.WriteLine(Elements[i-1].Atom + ":" + Elements[i-1].Count);
 			}
-			Console.WriteLine(Multip);
+			//Console.WriteLine(Multip);
 		}
 
 		public void ReUp(int _times) {
@@ -55,6 +55,16 @@ namespace ChemBalancer {
 				}
 			}
 			return found;
+		}
+
+		public string GetMultip() {
+			string returned = "";
+
+			if (Multip != 1) {
+				returned = Multip + "";
+			}
+
+			return returned;
 		}
 
 	}

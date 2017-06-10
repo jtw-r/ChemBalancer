@@ -8,49 +8,39 @@ using System.Threading.Tasks;
 namespace ChemBalancer {
 	class Balancer {
 		public void BalanceEquation() {
-			var reactants = GetReactants();
-			var products = GetProducts();
+			var reactants = AskForCompounds("> Reactants:");
+			var products = AskForCompounds("> Products:");
+			var comp = new[] { reactants, products };
+
+			if (reactants == null || products == null) return;
 
 			var unique_elements = new List<string>();
 
-			for (int r = 0; r < reactants.Count; r++) {
-				for (int e = 0; e < reactants[r].Elements.Count; e++) {
-					string current_atom = reactants[r].Elements[e].Atom;
+			for (int comp_index= 0; comp_index < comp.Length; comp_index++) {
+				for (int component = 0; component < comp[comp_index].Count; component++) {
+					for (int e = 0; e < comp[comp_index][component].Elements.Count; e++) {
+						string current_atom = comp[comp_index][component].Elements[e].Atom;
 
-					if (!unique_elements.Contains(current_atom)) {
-						unique_elements.Add(current_atom);
-					}
-				}
-			}
-
-			for (int p = 0; p < products.Count; p++) {
-				for (int e = 0; e < products[p].Elements.Count; e++) {
-					string current_atom = products[p].Elements[e].Atom;
-
-					if (!unique_elements.Contains(current_atom)) {
-						unique_elements.Add(current_atom);
+						if (!unique_elements.Contains(current_atom)) {
+							unique_elements.Add(current_atom);
+						}
 					}
 				}
 			}
 
 			var balance_table = new int[unique_elements.Count, 2];
+
 			Action recalc_balance_table = () => {
 				balance_table = new int[unique_elements.Count, 2];
-				for (int r = 0; r < reactants.Count; r++) {
-					for (int e = 0; e < reactants[r].Elements.Count; e++) {
-						int atom_count = reactants[r].Elements[e].Count;
-						int entry = unique_elements.FindIndex(reactants[r].Elements[e].Atom.Equals);
 
-						balance_table[entry, 0] += atom_count;
-					}
-				}
+				for (int comp_index = 0; comp_index < comp.Length; comp_index++) {
+					for (int component = 0; component < comp[comp_index].Count; component++) {
+						for (int e = 0; e < comp[comp_index][component].Elements.Count; e++) {
+							int atom_count = comp[comp_index][component].Elements[e].Count;
+							int entry = unique_elements.FindIndex(comp[comp_index][component].Elements[e].Atom.Equals);
 
-				for (int p = 0; p < products.Count; p++) {
-					for (int e = 0; e < products[p].Elements.Count; e++) {
-						int atom_count = products[p].Elements[e].Count;
-						int entry = unique_elements.FindIndex(products[p].Elements[e].Atom.Equals);
-
-						balance_table[entry, 1] += atom_count;
+							balance_table[entry, comp_index] += atom_count;
+						}
 					}
 				}
 			};
@@ -64,33 +54,19 @@ namespace ChemBalancer {
 
 					if (need == 0) continue;
 					can_break = false;
+
 					string atom = unique_elements[e];
-
-					int side;
-					side = need < 0 ? 0 : 1;
-
-					var comp = new List<Compound>[] {reactants, products};
-
+					int side = need < 0 ? 0 : 1;
+					need = Math.Abs(need);
+					
 					var occurances = new List<Compound>();
 					for (int i = 0; i < comp[side].Count; i++) {
-						if (comp[side][i].CheckFor(atom)) {
-							//int entry = comp[side][i].Elements.FindIndex(a => Element.Atom atom.Equals);
-
-							int entry = 0;
-							for (int el = 0; el < comp[side][i].Elements.Count; el++) {
-								if (comp[side][i].Elements[el].Atom == atom) {
-									entry = el;
-									break;
-								}
-							}
-
-							int entry_base_count = comp[side][i].Elements[entry].base_count;
-
-							// Checks if entry divides evenly by need.
-							if (need % entry_base_count == 0) {
-								occurances.Add(comp[side][i]);
-							}
+						if (!comp[side][i].CheckFor(atom)) continue;
+						for (int el = 0; el < comp[side][i].Elements.Count; el++) {
+							if (comp[side][i].Elements[el].Atom != atom) continue;
+							break;
 						}
+						occurances.Add(comp[side][i]);
 					}
 
 					if (occurances.Count == 0) {
@@ -102,49 +78,62 @@ namespace ChemBalancer {
 
 					int occurance = 0;
 					for (int el = 0; el < occurances[0].Elements.Count; el++) {
-						if (occurances[0].Elements[el].Atom == atom) {
-							occurance = el;
-							break;
-						}
+						if (occurances[0].Elements[el].Atom != atom) continue;
+						occurance = el;
+						break;
 					}
 					int occurance_base_count = occurances[0].Elements[occurance].base_count;
+
+					need = CheckAndUpdate(need, occurance_base_count);
 
 					occurances[0].ReUp(need / occurance_base_count);
 					recalc_balance_table();
 				}
 
-				if (can_break) {
-					Console.WriteLine("\n>Output:");
-					foreach (var item in reactants) {
-						Console.WriteLine(item.Multip + item.Full);
+				if (!can_break) continue;
+				Console.WriteLine("\n>Output:");
+				var output = new[] {"", ""};
+
+				for (int comp_index = 0; comp_index < comp.Length; comp_index++) {
+					for (int component = 0; component < comp[comp_index].Count; component++) {
+						if (component != 0) {
+							output[comp_index] += " + ";
+						}
+						output[comp_index] += comp[comp_index][component].GetMultip() + comp[comp_index][component].Full;
 					}
-					foreach (var item in products) {
-						Console.WriteLine(item.Multip + item.Full);
-					}
-					break;
 				}
+
+				Console.WriteLine(output[0] + " >>> " + output[1]);
+				break;
 			}
 
 		}
 
-		
-
-		public List<Compound> GetReactants() {
-			Console.WriteLine("> Reactants:");
-			string input = Console.ReadLine();
-
-			var rs = Regex.Split(input.Replace(" ",""),"[+]");
-
-			return rs.Select(t => new Compound(t.Replace("+", ""))).ToList();
+		public int CheckAndUpdate(int a, int b) {
+			while (true) {
+				if (a % b == 0) return a;
+				a += a;
+			}
 		}
 
-		public List<Compound> GetProducts() {
-			Console.WriteLine("> Products:");
-			string input = Console.ReadLine();
+		public List<Compound> AskForCompounds(string prompt) {
+			while (true) {
+				Console.WriteLine(prompt);
+				string input = Console.ReadLine();
 
-			var ps = Regex.Split(input.Replace(" ", ""), "[+]");
-
-			return ps.Select(t => new Compound(t.Replace("+", ""))).ToList();
+				if (input == null) continue;
+				switch (input.ToLower()) {
+					default:
+						var rs = Regex.Split(input.Replace(" ", ""), "[+]");
+						return rs.Select(t => new Compound(t.Replace("+", ""))).ToList();
+					case "redo":
+						continue;
+					case "exit":
+						return null;
+					case "":
+						return null;
+				}
+			}
 		}
 	}
 }
