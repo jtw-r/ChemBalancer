@@ -2,28 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using static System.Console;
 
 namespace ChemBalancer {
-	class Balancer {
-		public void BalanceEquation() {
+	internal class Balancer {
+		public bool BalanceEquation() {
 			var reactants = AskForCompounds("> Reactants:");
 			var products = AskForCompounds("> Products:");
-			var comp = new[] { reactants, products };
+			var comp = new[] {reactants, products};
 
-			if (reactants == null || products == null) return;
+			if (reactants == null || products == null) return true;
 
 			var unique_elements = new List<string>();
 
-			for (int comp_index= 0; comp_index < comp.Length; comp_index++) {
-				for (int component = 0; component < comp[comp_index].Count; component++) {
-					for (int e = 0; e < comp[comp_index][component].Elements.Count; e++) {
-						string current_atom = comp[comp_index][component].Elements[e].Atom;
+			for (int comp_index = 0; comp_index < comp.Length; comp_index++)
+			for (int component = 0; component < comp[comp_index].Count; component++)
+			for (int e = 0; e < comp[comp_index][component].Elements.Count; e++) {
+				string current_atom = comp[comp_index][component].Elements[e].Atom;
 
-						if (!unique_elements.Contains(current_atom)) {
-							unique_elements.Add(current_atom);
-						}
-					}
-				}
+				if (!unique_elements.Contains(current_atom)) unique_elements.Add(current_atom);
 			}
 
 			var balance_table = new int[unique_elements.Count, 2];
@@ -31,15 +28,13 @@ namespace ChemBalancer {
 			Action recalc_balance_table = () => {
 				balance_table = new int[unique_elements.Count, 2];
 
-				for (int comp_index = 0; comp_index < comp.Length; comp_index++) {
-					for (int component = 0; component < comp[comp_index].Count; component++) {
-						for (int e = 0; e < comp[comp_index][component].Elements.Count; e++) {
-							int atom_count = comp[comp_index][component].Elements[e].Count;
-							int entry = unique_elements.FindIndex(comp[comp_index][component].Elements[e].Atom.Equals);
+				for (int comp_index = 0; comp_index < comp.Length; comp_index++)
+				for (int component = 0; component < comp[comp_index].Count; component++)
+				for (int e = 0; e < comp[comp_index][component].Elements.Count; e++) {
+					int atom_count = comp[comp_index][component].Elements[e].Count;
+					int entry = unique_elements.FindIndex(comp[comp_index][component].Elements[e].Atom.Equals);
 
-							balance_table[entry, comp_index] += atom_count;
-						}
-					}
+					balance_table[entry, comp_index] += atom_count;
 				}
 			};
 
@@ -56,7 +51,7 @@ namespace ChemBalancer {
 					string atom = unique_elements[e];
 					int side = need < 0 ? 0 : 1;
 					need = Math.Abs(need);
-					
+
 					var occurances = new List<Compound>();
 					for (int i = 0; i < comp[side].Count; i++) {
 						if (!comp[side][i].CheckFor(atom)) continue;
@@ -69,8 +64,14 @@ namespace ChemBalancer {
 
 					if (occurances.Count == 0) {
 						string side_value = side == 0 ? "reactant" : "product";
-						Console.WriteLine("> ERROR in " + side_value + ".");
-						return;
+						ForegroundColor = ConsoleColor.Red;
+						WriteLine("> ERROR in " + side_value + ".");
+						ForegroundColor = ConsoleColor.Gray;
+						WriteLine("> Restart? Y/N");
+						ForegroundColor = ConsoleColor.White;
+						string input = ReadLine().ToLower();
+						ForegroundColor = ConsoleColor.Gray;
+						return input != "y";
 					}
 
 					int occurance = 0;
@@ -81,42 +82,39 @@ namespace ChemBalancer {
 					}
 					int occurance_base_count = occurances[0].Elements[occurance].BaseCount;
 
-					need = CheckAndUpdate(need, occurance_base_count);
-
-					occurances[0].ReUp(need / occurance_base_count);
+					occurances[0].ReUp(DivideAndUpdate(need, occurance_base_count) / occurance_base_count);
 					recalc_balance_table();
 				}
 
 				if (!can_break) continue;
-				Console.WriteLine("\n>Output:");
+				WriteLine("\n>Output:");
 				var output = new[] {"", ""};
 
-				for (int comp_index = 0; comp_index < comp.Length; comp_index++) {
-					for (int component = 0; component < comp[comp_index].Count; component++) {
-						if (component != 0) {
-							output[comp_index] += " + ";
-						}
-						output[comp_index] += comp[comp_index][component].GetMultiplier() + comp[comp_index][component].Full;
-					}
+				for (int comp_index = 0; comp_index < comp.Length; comp_index++)
+				for (int component = 0; component < comp[comp_index].Count; component++) {
+					if (component != 0) output[comp_index] += " + ";
+					output[comp_index] += comp[comp_index][component].GetMultiplier() + comp[comp_index][component].Full;
 				}
 
-				Console.WriteLine(output[0] + " >>> " + output[1]);
+				ForegroundColor = ConsoleColor.Yellow;
+				WriteLine(output[0] + " >>> " + output[1]);
+				ForegroundColor = ConsoleColor.Gray;
 				break;
 			}
-
+			return true;
 		}
 
-		public int CheckAndUpdate(int _a, int _b) {
-			while (_a/_b < 1) {
-				_a += _a;
-			}
+		internal int DivideAndUpdate(int _a, int _b) {
+			while (_a / _b < 1) _a += _a;
 			return _a;
 		}
 
-		public List<Compound> AskForCompounds(string _prompt) {
+		internal List<Compound> AskForCompounds(string _prompt) {
 			while (true) {
-				Console.WriteLine(_prompt);
-				string input = Console.ReadLine();
+				WriteLine(_prompt);
+				ForegroundColor = ConsoleColor.White;
+				string input = ReadLine();
+				ForegroundColor = ConsoleColor.Gray;
 
 				if (input == null) continue;
 				switch (input.ToLower()) {
