@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace ChemBalancer {
 	class Balancer {
@@ -70,8 +68,7 @@ namespace ChemBalancer {
 					}
 
 					if (occurances.Count == 0) {
-						string side_value = "";
-						side_value = side == 0 ? "reactant" : "product";
+						string side_value = side == 0 ? "reactant" : "product";
 						Console.WriteLine("> ERROR in " + side_value + ".");
 						return;
 					}
@@ -82,7 +79,7 @@ namespace ChemBalancer {
 						occurance = el;
 						break;
 					}
-					int occurance_base_count = occurances[0].Elements[occurance].base_count;
+					int occurance_base_count = occurances[0].Elements[occurance].BaseCount;
 
 					need = CheckAndUpdate(need, occurance_base_count);
 
@@ -99,7 +96,7 @@ namespace ChemBalancer {
 						if (component != 0) {
 							output[comp_index] += " + ";
 						}
-						output[comp_index] += comp[comp_index][component].GetMultip() + comp[comp_index][component].Full;
+						output[comp_index] += comp[comp_index][component].GetMultiplier() + comp[comp_index][component].Full;
 					}
 				}
 
@@ -109,23 +106,23 @@ namespace ChemBalancer {
 
 		}
 
-		public int CheckAndUpdate(int a, int b) {
-			while (true) {
-				if (a % b == 0) return a;
-				a += a;
+		public int CheckAndUpdate(int _a, int _b) {
+			while (_a/_b < 1) {
+				_a += _a;
 			}
+			return _a;
 		}
 
-		public List<Compound> AskForCompounds(string prompt) {
+		public List<Compound> AskForCompounds(string _prompt) {
 			while (true) {
-				Console.WriteLine(prompt);
+				Console.WriteLine(_prompt);
 				string input = Console.ReadLine();
 
 				if (input == null) continue;
 				switch (input.ToLower()) {
 					default:
-						var rs = Regex.Split(input.Replace(" ", ""), "[+]");
-						return rs.Select(t => new Compound(t.Replace("+", ""))).ToList();
+						var input_split = Regex.Split(input.Replace(" ", ""), "[+]");
+						return input_split.Select(_compounds => new Compound(_compounds.Replace("+", ""))).ToList();
 					case "redo":
 						continue;
 					case "exit":

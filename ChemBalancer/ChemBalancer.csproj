@@ -42,7 +42,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Atom.cs" />
     <Compile Include="Balancer.cs" />
     <Compile Include="Compound.cs" />
     <Compile Include="Element.cs" />

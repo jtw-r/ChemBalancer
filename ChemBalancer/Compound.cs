@@ -1,45 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace ChemBalancer {
 	class Compound {
 
 		public List<Element> Elements = new List<Element>();
-		public int Multip { private set; get; }
+		public int Multiplier { private set; get; }
 
-		public string Full { private set; get; }
+		public string Full { get; }
 
 		public Compound(string _formula) {
-			this.Full = _formula;
-			string[] e = Regex.Split(_formula, "(?=[A-Z])");
+			Full = _formula;
 
-			var _multip = Regex.Match(e[0], "([0-9]+)").Value;
-			if (_multip == "") {
-				Multip = 1;
-			} else {
-				Multip = Convert.ToInt32(_multip);
-			}
+			var parenthesis = Regex.Split(_formula, "(?>[(])");
 
-			for (int i = 1; i < e.Length; i++) {
-				var num = Regex.Match(e[i], "([0-9]+)").Value;
-				if (num == "") {
-					num = "1";
+			if (parenthesis.Length > 1) {
+				for (int p = 1; p < parenthesis.Length; p++) {
+					var parenthesis_end = Regex.Split(parenthesis[p], "(?<=[)])");
+
+					string parenthesis_num = Regex.Match(parenthesis_end[1], "([0-9]+)").Value;
+					string parenthesis_without = parenthesis[p].Remove(parenthesis[p].IndexOf(")", StringComparison.Ordinal));
+
+					CreateElements(parenthesis_without, Convert.ToInt32(parenthesis_num));
+					_formula = _formula.Remove(_formula.IndexOf("(" + parenthesis_without + ")^" + parenthesis_num,
+						StringComparison.Ordinal));
 				}
-
-				var atom = e[i].Replace("^" + num, "");
-
-				Elements.Add(new Element(atom, Convert.ToInt32(num)));
-				//Console.WriteLine(Elements[i-1].Atom + ":" + Elements[i-1].Count);
 			}
-			//Console.WriteLine(Multip);
+
+			CreateElements(_formula);
+		}
+
+		public void CreateElements(string _formula, int _mult = 1) {
+			var input = Regex.Split(_formula, "(?=[A-Z])");
+
+			string check_multip = Regex.Match(input[0], "([0-9]+)").Value;
+			Multiplier = check_multip == "" ? 1 : Convert.ToInt32(check_multip);
+
+			for (int i = 1; i < input.Length; i++) {
+				string num = Regex.Match(input[i], "([0-9]+)").Value;
+				if (num == "") num = "1";
+
+				string atom = input[i].Replace("^" + num, "");
+
+				Elements.Add(new Element(atom, Convert.ToInt32(num)*_mult));
+			}
+		}
+
+		public void DoTheOtherSplit(string _formula) {
+			
 		}
 
 		public void ReUp(int _times) {
-			Multip += Math.Abs(_times);
+			Multiplier += Math.Abs(_times);
 
 			for (int i = 0; i < Elements.Count; i++) {
 				Elements[i].ReUp(Math.Abs(_times));
@@ -50,19 +63,17 @@ namespace ChemBalancer {
 		public bool CheckFor(string _atom) {
 			bool found = false;
 			for (int e = 0; e < Elements.Count; e++) {
-				if (Elements[e].Atom == _atom) {
-					found = true;
-				}
+				if (Elements[e].Atom != _atom) continue;
+				found = true;
 			}
 			return found;
 		}
 
-		public string GetMultip() {
+		public string GetMultiplier() {
 			string returned = "";
 
-			if (Multip != 1) {
-				returned = Multip + "";
-			}
+			if (Multiplier == 1) return returned;
+			returned = Multiplier + "";
 
 			return returned;
 		}
