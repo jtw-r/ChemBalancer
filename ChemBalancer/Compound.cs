@@ -8,17 +8,20 @@ using System.Threading.Tasks;
 namespace ChemBalancer {
 	class Compound {
 
-		public List<Element> elements = new List<Element>();
-		public int multip { private set; get; }
+		public List<Element> Elements = new List<Element>();
+		public int Multip { private set; get; }
+
+		public string Full { private set; get; }
 
 		public Compound(string _formula) {
+			this.Full = _formula;
 			string[] e = Regex.Split(_formula, "(?=[A-Z])");
 
 			var _multip = Regex.Match(e[0], "([0-9]+)").Value;
 			if (_multip == "") {
-				multip = 1;
+				Multip = 1;
 			} else {
-				multip = Convert.ToInt32(_multip);
+				Multip = Convert.ToInt32(_multip);
 			}
 
 			for (int i = 1; i < e.Length; i++) {
@@ -29,25 +32,25 @@ namespace ChemBalancer {
 
 				var atom = e[i].Replace("^" + num, "");
 
-				elements.Add(new Element(atom, Convert.ToInt32(num)));
-				Console.WriteLine(elements[i-1].Atom + ":" + elements[i-1].Count);
+				Elements.Add(new Element(atom, Convert.ToInt32(num)));
+				Console.WriteLine(Elements[i-1].Atom + ":" + Elements[i-1].Count);
 			}
-			Console.WriteLine(multip);
+			Console.WriteLine(Multip);
 		}
 
-		public void ReUp(int times) {
-			this.multip += Math.Abs(times);
+		public void ReUp(int _times) {
+			Multip += Math.Abs(_times);
 
-			for (int i = 0; i < elements.Count; i++) {
-				elements[i].ReUp(times);
+			for (int i = 0; i < Elements.Count; i++) {
+				Elements[i].ReUp(Math.Abs(_times));
 			}
 
 		}
 
 		public bool CheckFor(string _atom) {
 			bool found = false;
-			for (int e = 0; e < elements.Count; e++) {
-				if (elements[e].Atom == _atom) {
+			for (int e = 0; e < Elements.Count; e++) {
+				if (Elements[e].Atom == _atom) {
 					found = true;
 				}
 			}
