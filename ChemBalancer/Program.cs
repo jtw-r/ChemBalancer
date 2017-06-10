@@ -28,6 +28,9 @@ namespace ChemBalancer {
 						break;
 					case "check":
 						break;
+					case "exit":
+						Console.Write("Have a nice day!");
+						return;
 				}
 			}
 		}
