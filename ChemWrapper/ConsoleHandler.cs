@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using ChemBalancer;
 using ChemAtoms;
 
@@ -11,8 +12,6 @@ namespace ChemWrapper {
 		public ConsoleHandler() {
 			Console.WriteLine("ChemBalancer\n(c) Copyright 2017");
 			Console.WriteLine("\n> Type HELP for help");
-			
-			c_Balancer = new Balancer();
 
 			Handler();
 		}

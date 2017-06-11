@@ -3,7 +3,7 @@
 namespace ChemWrapper {
 	internal class Program {
 		[STAThread]
-		private static void Main() {
+		public static void Main() {
 			var console = new ConsoleHandler();
 		}
 

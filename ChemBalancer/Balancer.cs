@@ -190,7 +190,10 @@ namespace ChemBalancer {
 		}
 
 		internal int DivideAndUpdate(int _a, int _b) {
+			// If _a/_b is less than 1 then double _a until _a/_b is greater than 1.
 			while (_a / _b < 1) _a += _a;
+
+			// Yay! _a/_b is > 1, now return _a.
 			return _a;
 		}
 
