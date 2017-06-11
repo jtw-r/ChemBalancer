@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 // Possible read from datafile. .json?
 // Atom.cs calls a look up form:
@@ -13,7 +9,7 @@ using System.Threading.Tasks;
 namespace ChemAtoms {
 	class Table {
 		public void Load() {
-			var Atoms = new List<Atom> {
+			var atoms = new List<Atom> {
 				new Atom("H","Hydrogen",1,1.01f,1,1),
 				new Atom("He","Helium",2,4f,1,18),
 				new Atom("Li","Lithium",3,6.94f,2,1),

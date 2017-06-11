@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5D9DE2DC-8696-414A-8E87-DDA68ED04A63}</ProjectGuid>
+    <ProjectGuid>{276FD5AB-1EE5-48E8-8F13-5E0C7895B3CB}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ChemBalancer</RootNamespace>
-    <AssemblyName>ChemBalancer</AssemblyName>
+    <RootNamespace>ChemWrapper</RootNamespace>
+    <AssemblyName>ChemWrapper</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -42,9 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Balancer.cs" />
-    <Compile Include="Compound.cs" />
-    <Compile Include="Element.cs" />
+    <Compile Include="ConsoleHandler.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +53,10 @@
     <ProjectReference Include="..\ChemAtoms\ChemAtoms.csproj">
       <Project>{91bbf254-0e7a-4dbe-9222-08aa79e639af}</Project>
       <Name>ChemAtoms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ChemBalancer\ChemBalancer.csproj">
+      <Project>{5d9de2dc-8696-414a-8e87-dda68ed04a63}</Project>
+      <Name>ChemBalancer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

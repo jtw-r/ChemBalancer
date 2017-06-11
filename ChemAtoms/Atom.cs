@@ -22,21 +22,23 @@ namespace ChemAtoms{
 
 		private int electronShells;
 
-		public Atom(string _symbol, string _name, int _number, float _mass, int _period, int _group) {
+		public Atom(string _symbol) {
+			var data = new AtomData().FindAtom(_symbol);
 			Symbol = _symbol;
-			Name = _name;
+			Name = data.Item1;
 
-			Number = _number;
-			Mass = _mass;
+			Number = data.Item2;
+			Mass = data.Item3;
 
-			period = _period;
-			group = _group;
+			period = data.Item4;
+			group = data.Item5;
 
-			Protons = (int) _mass;
-			Neutrons = (int) _mass;
-			Eletrons = _number;
+			Protons = data.Item2;
+			Neutrons = (int) data.Item3;
+			Eletrons = data.Item2;
 
-			electronShells = _period;
+			electronShells = data.Item4;
+
 		}
 		
 	}

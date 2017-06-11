@@ -1,16 +1,23 @@
 ﻿using System;
+using ChemBalancer;
+using ChemAtoms;
 
-namespace ChemBalancer {
-	internal class Program {
-		[STAThread]
-		private static void Main() {
-			var pr = new Program();
-			pr.CommandLineHandler();
-		}
+namespace ChemWrapper {
+	public class ConsoleHandler {
 
-		public void CommandLineHandler() {
+		private readonly Atom c_Atom;
+		private readonly Balancer c_Balancer;
+
+		public ConsoleHandler() {
 			Console.WriteLine("ChemBalancer\n(c) Copyright 2017");
 			Console.WriteLine("\n> Type HELP for help");
+			
+			c_Balancer = new Balancer();
+
+			Handler();
+		}
+
+		internal void Handler() {
 			while (true) {
 				Console.WriteLine("> Command:");
 				Console.ForegroundColor = ConsoleColor.White;
@@ -24,11 +31,12 @@ namespace ChemBalancer {
 						                  "> [WIP]Check - the command to check if an equation is balanced correct.");
 						break;
 					case "balance":
-						var bal = new Balancer();
 						while (true) {
-							if (bal.BalanceEquation() == false) continue;
+							if (c_Balancer.BalanceEquation() == false) continue;
 							break;
 						}
+						break;
+					case "atom info":
 						break;
 					case "check":
 						break;
