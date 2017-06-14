@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Diagnostics;
 using ChemBalancer;
 using ChemAtoms;
 
 namespace ChemWrapper {
 	public class ConsoleHandler {
 
-		private readonly Atom c_Atom;
-		private readonly Balancer c_Balancer;
+		private AtomView cAtomView;
+		private Balancer cBalancer;
 
 		public ConsoleHandler() {
 			Console.WriteLine("ChemBalancer\n(c) Copyright 2017");
@@ -24,20 +23,23 @@ namespace ChemWrapper {
 				Console.ForegroundColor = ConsoleColor.Gray;
 				switch (line_input) {
 					default:
+						Console.WriteLine("> This command does not exits.");
 						continue;
 					case "help":
 						Console.WriteLine("> Balance - the command to balance an equation.\n" +
-						                  "> [WIP]Check - the command to check if an equation is balanced correct.");
+						                  "> [Does not exits]Check - the command to check if an equation is balanced correct.\n" +
+										  "> [WIP]Atom Info - the command to show information on a specific atom.");
 						break;
 					case "balance":
+						cBalancer = new Balancer();
 						while (true) {
-							if (c_Balancer.BalanceEquation() == false) continue;
+							if (cBalancer.BalanceEquation() == false) continue;
 							break;
 						}
 						break;
 					case "atom info":
-						break;
-					case "check":
+						cAtomView = new AtomView();
+						cAtomView.ShowDialog();
 						break;
 					case "exit":
 						Console.Write("Have a nice day!");

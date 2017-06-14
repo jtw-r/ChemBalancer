@@ -6,7 +6,7 @@ using static System.Console;
 
 namespace ChemBalancer {
 	public class Balancer {
-		public bool BalanceEquation() {
+		public bool BalanceEquation(int _tollerence = 100) {
 			// Ask user for reactants and products.
 			var reactants = AskForCompounds("> Reactants:");
 			var products = AskForCompounds("> Products:");
@@ -60,7 +60,21 @@ namespace ChemBalancer {
 
 			// This is the main loop! This loop cycles through the balance table
 			// works on balancing elements out.
+			int count = 0;
 			while (true) {
+				if (count > _tollerence) {
+					ForegroundColor = ConsoleColor.Red;
+					WriteLine("> Equation could not be balanced.");
+					ForegroundColor = ConsoleColor.Gray;
+					WriteLine("> Restart? Y/N");
+					ForegroundColor = ConsoleColor.White;
+					string read_line = ReadLine();
+					if (read_line != null) {
+						string input = read_line.ToLower();
+						ForegroundColor = ConsoleColor.Gray;
+						return input != "y";
+					}
+				}
 				// A simple true/false to tell if the loop should stop.
 				// Default is true then gets set false later if needed.
 				bool can_break = true;
@@ -72,8 +86,6 @@ namespace ChemBalancer {
 					// Gets the element's reactant cound and subtracts the
 					// product's count resulting in a sometimes negative number.
 					int need = balance_table[e, 0] - balance_table[e, 1];
-
-					
 					
 					if (need == 0) continue; // Yay, this element was perfectly balanced!
 											 // Continue onto the next element in the table.
@@ -158,6 +170,7 @@ namespace ChemBalancer {
 
 					// Rebalance the balance table.
 					recalc_balance_table();
+					count++;
 				}
 
 				if (!can_break) continue;
