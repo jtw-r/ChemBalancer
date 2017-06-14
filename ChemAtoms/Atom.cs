@@ -1,42 +1,61 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChemAtoms{
 	public class Atom {
 
-		public string Symbol { private set; get; }
-		public string Name { private set; get; }
+		public enum SearchType {
+			Name,
+			Symbol
+		};
 
-		public int Number { private set; get; }
-		public float Mass { private set; get; }
+		public string Symbol { get; }
+		public string Name { get; }
 
-		private int period; // X-axis
-		private int group; // Y-axis
+		public int Number { get; }
+		public float Mass { get; }
 
-		public int Protons { private set; get; }
-		public int Neutrons { private set; get; }
-		public int Eletrons { private set; get; }
+		public int Period; // X-axis
+		public int Group; // Y-axis
 
-		private int electronShells;
+		public int Protons { get; }
+		public int Neutrons { get; }
+		public int Eletrons { get; }
 
-		public Atom(string _symbol, string _name, int _number, float _mass, int _period, int _group) {
-			Symbol = _symbol;
-			Name = _name;
+		public int ElectronShells;
+		public int ValenceElectrons;
 
-			Number = _number;
-			Mass = _mass;
+		public Atom(string _input, SearchType _search_type = SearchType.Symbol) {
+			Tuple<string, int, float, int, int, int> data;
 
-			period = _period;
-			group = _group;
+			switch (_search_type) {
+				case SearchType.Name:
+					var source = new AtomData().FindAtomByName(_input);
+					data = source.Value;
+					Symbol = source.Key;
+					break;
+				case SearchType.Symbol:
+					data = new AtomData().FindAtomBySymbol(_input);
+					Symbol = _input;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(_search_type), _search_type, null);
+			}
 
-			Protons = (int) _mass;
-			Neutrons = (int) _mass;
-			Eletrons = _number;
+			if (data == null) return;
+			Name = data.Item1;
 
-			electronShells = _period;
+			Number = data.Item2;
+			Mass = data.Item3;
+
+			Period = data.Item4;
+			Group = data.Item5;
+
+			Protons = data.Item2;
+			Neutrons = (int) data.Item3;
+			Eletrons = data.Item2;
+
+			ElectronShells = data.Item4;
+			ValenceElectrons = data.Item6;
 		}
 		
 	}
