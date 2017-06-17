@@ -7,12 +7,7 @@ using ChemConsole;
 namespace ChemBalancer {
 	public static class Balancer {
 
-		public enum UseType {
-			Balance,
-			Check
-		}
-
-		public static bool BalanceEquation(int _tollerence = 100, UseType _use = UseType.Balance) {
+		public static bool BalanceEquation(int _tollerence = 100) {
 			// Ask user for reactants and products.
 			var reactants = AskForCompounds("Reactants:");
 			var products = AskForCompounds("Products:");
@@ -34,7 +29,7 @@ namespace ChemBalancer {
 			for (int e = 0; e < comp[comp_index][component].Elements.Count; e++) {
 				// Get the current atom that the for-loops are looking at.
 				string current_atom = comp[comp_index][component].Elements[e].Atom.Symbol;
-				
+
 				// Check if the current element's symbol (H, N, Cl) is NOT already
 				// in the unique_elements list. If so, add it to the list!
 				if (!unique_elements.Contains(current_atom)) unique_elements.Add(current_atom);
@@ -69,7 +64,7 @@ namespace ChemBalancer {
 			int count = 0;
 			while (true) {
 				if (count > _tollerence) {
-					return _use != UseType.Check && ConsoleFunctions.ThrowError("Equation could not be balanced");
+					return ConsoleFunctions.ThrowError("Equation could not be balanced");
 				}
 
 				// A simple true/false to tell if the loop should stop.
@@ -83,13 +78,9 @@ namespace ChemBalancer {
 					// Gets the element's reactant cound and subtracts the
 					// product's count resulting in a sometimes negative number.
 					int need = balance_table[e, 0] - balance_table[e, 1];
-					
-					if (need == 0) continue; // Yay, this element was perfectly balanced!
-											 // Continue onto the next element in the table.
 
-					if (_use == UseType.Check) {
-						return false;
-					}
+					if (need == 0) continue; // Yay, this element was perfectly balanced!
+					// Continue onto the next element in the table.
 
 					// Oh no, the element was not balanced. Tell the loop that
 					// it can't break yet.
@@ -117,8 +108,8 @@ namespace ChemBalancer {
 						if (!comp[side][i].CheckFor(atom)) continue;
 						for (int el = 0; el < comp[side][i].Elements.Count; el++) {
 							if (comp[side][i].Elements[el].Atom.Symbol != atom) continue; // This element was not the one we want :(
-																						  // Goto the next element in the compound.
-							
+							// Goto the next element in the compound.
+
 							// Yay! the selected element was the one we were looking
 							// for, break the loop so that it doesn't continue.
 							break;
@@ -136,11 +127,7 @@ namespace ChemBalancer {
 						// element that does not exist! That can't happen normally.
 						// Warn the user.
 						string side_value = side == 0 ? "reactant" : "product";
-						if (_use == UseType.Balance) {
-							return ConsoleFunctions.ThrowError("ERROR in " + side_value + ".");
-						}
-						ConsoleFunctions.ThrowError("ERROR in " + side_value + ".", null);
-						return false;
+						return ConsoleFunctions.ThrowError("ERROR in " + side_value + ".");
 					}
 
 					// The index of the element that we want to target in the
@@ -172,11 +159,8 @@ namespace ChemBalancer {
 
 				if (!can_break) continue;
 
-				if (_use == UseType.Check) {
-					return true;
-				}
 				// Yay! The loop can break, start the output process.
-				ConsoleFunctions.WriteLine("\n>Output:",ConsoleColor.Gray,false);
+				ConsoleFunctions.WriteLine("\n>Output:", ConsoleColor.Gray, false);
 
 				// Create an array for the reactant and product output.
 				var output = new[] {"", ""};
@@ -186,7 +170,7 @@ namespace ChemBalancer {
 				for (int comp_index = 0; comp_index < comp.Length; comp_index++)
 				for (int component = 0; component < comp[comp_index].Count; component++) {
 					if (component != 0) output[comp_index] += " + "; // Add a divider in-between each compound,
-																	 // but not on the first entry.
+					// but not on the first entry.
 
 					// Append the compounds multiplyer than the origional value;
 					// 2NaO^4Xe^2
@@ -194,7 +178,7 @@ namespace ChemBalancer {
 				}
 
 				// Finally, output the final values in bright yellow.
-				ConsoleFunctions.WriteLine(output[0] + " >>> " + output[1],ConsoleColor.Yellow,false);
+				ConsoleFunctions.WriteLine(output[0] + " >>> " + output[1], ConsoleColor.Yellow, false);
 				break;
 			}
 			// Yes, it was successful! Return true.

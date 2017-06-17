@@ -6,7 +6,7 @@ namespace ChemBalancer {
 	internal class Compound {
 
 		public readonly List<Element> Elements = new List<Element>();
-		private int Multiplier { set; get; }
+		public int Multiplier { private set; get; }
 
 		public string FullEquation { get; }
 
