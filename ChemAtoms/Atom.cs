@@ -1,4 +1,5 @@
 ﻿using System;
+using ChemConsole;
 
 namespace ChemAtoms{
 	public class Atom {
@@ -8,21 +9,21 @@ namespace ChemAtoms{
 			Symbol
 		};
 
-		public string Symbol { get; }
-		public string Name { get; }
+		public string Symbol { get; } // Atom's symbol: H, Xe, Cl
+		public string Name { get; } // Atom's name
 
-		public int Number { get; }
-		public float Mass { get; }
+		public int Number { get; } // Atomic Number
+		public float Mass { get; } // Atomic Mass
 
-		public int Period; // X-axis
-		public int Group; // Y-axis
+		public int Period { get; } // X-axis
+		public int Group { get; } // Y-axis
 
 		public int Protons { get; }
 		public int Neutrons { get; }
 		public int Eletrons { get; }
 
-		public int ElectronShells;
-		public int ValenceElectrons;
+		public int ElectronShells { get; }
+		private int ValenceElectrons;
 
 		public Atom(string _input, SearchType _search_type = SearchType.Symbol) {
 			Tuple<string, int, float, int, int, int> data;
@@ -38,6 +39,7 @@ namespace ChemAtoms{
 					Symbol = _input;
 					break;
 				default:
+					ConsoleFunctions.ThrowError("Search Type: " + _search_type + " is not valid", null);
 					throw new ArgumentOutOfRangeException(nameof(_search_type), _search_type, null);
 			}
 

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace ChemBalancer {
-	class Compound {
+	internal class Compound {
 
-		public List<Element> Elements = new List<Element>();
-		public int Multiplier { private set; get; }
+		public readonly List<Element> Elements = new List<Element>();
+		private int Multiplier { set; get; }
 
 		public string FullEquation { get; }
 
@@ -31,7 +31,7 @@ namespace ChemBalancer {
 			CreateElements(_formula);
 		}
 
-		public void CreateElements(string _formula, int _mult = 1) {
+		private void CreateElements(string _formula, int _mult = 1) {
 			var input = Regex.Split(_formula, "(?=[A-Z])");
 
 			string check_multip = Regex.Match(input[0], "([0-9]+)").Value;

@@ -65,6 +65,12 @@
       <DependentUpon>AtomView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChemConsole\ChemConsole.csproj">
+      <Project>{482C78A8-846E-4F21-8F67-5BFDE42DC415}</Project>
+      <Name>ChemConsole</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

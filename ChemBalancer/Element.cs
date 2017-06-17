@@ -2,7 +2,7 @@
 using ChemAtoms;
 
 namespace ChemBalancer {
-	class Element {
+	internal class Element {
 
 		public Atom Atom { get; }
 		public int BaseCount { get; }

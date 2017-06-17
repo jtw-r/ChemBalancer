@@ -5,11 +5,8 @@ using System.Text.RegularExpressions;
 using ChemConsole;
 
 namespace ChemBalancer {
-	public class Balancer {
-
-		private readonly ColourFormatConsole cfc = new ColourFormatConsole();
-
-		public bool BalanceEquation(int _tollerence = 100) {
+	public static class Balancer {
+		public static bool BalanceEquation(int _tollerence = 100) {
 			// Ask user for reactants and products.
 			var reactants = AskForCompounds("Reactants:");
 			var products = AskForCompounds("Products:");
@@ -66,7 +63,7 @@ namespace ChemBalancer {
 			int count = 0;
 			while (true) {
 				if (count > _tollerence) {
-					return ThrowError("Equation could not be balanced");
+					return ConsoleFunctions.ThrowError("Equation could not be balanced");
 				}
 
 				// A simple true/false to tell if the loop should stop.
@@ -129,7 +126,7 @@ namespace ChemBalancer {
 						// element that does not exist! That can't happen normally.
 						// Warn the user.
 						string side_value = side == 0 ? "reactant" : "product";
-						return ThrowError("ERROR in " + side_value + ".");
+						return ConsoleFunctions.ThrowError("ERROR in " + side_value + ".");
 					}
 
 					// The index of the element that we want to target in the
@@ -162,7 +159,7 @@ namespace ChemBalancer {
 				if (!can_break) continue;
 
 				// Yay! The loop can break, start the output process.
-				cfc.WriteLine("\n>Output:",ConsoleColor.Gray,false);
+				ConsoleFunctions.WriteLine("\n>Output:",ConsoleColor.Gray,false);
 
 				// Create an array for the reactant and product output.
 				var output = new[] {"", ""};
@@ -180,7 +177,7 @@ namespace ChemBalancer {
 				}
 
 				// Finally, output the final values in bright yellow.
-				cfc.WriteLine(output[0] + " >>> " + output[1],ConsoleColor.Yellow,false);
+				ConsoleFunctions.WriteLine(output[0] + " >>> " + output[1],ConsoleColor.Yellow,false);
 				break;
 			}
 			// Yes, it was successful! Return true.
@@ -195,10 +192,10 @@ namespace ChemBalancer {
 			return _a;
 		}
 
-		private List<Compound> AskForCompounds(string _prompt) {
+		private static List<Compound> AskForCompounds(string _prompt) {
 			while (true) {
-				cfc.WriteLine(_prompt);
-				string input = cfc.ReadLine();
+				ConsoleFunctions.WriteLine(_prompt);
+				string input = ConsoleFunctions.ReadLine();
 
 				if (input == null) continue;
 				switch (input.ToLower()) {
@@ -212,17 +209,6 @@ namespace ChemBalancer {
 					case "":
 						return null;
 				}
-			}
-		}
-
-		private bool ThrowError(string _prompt) {
-			cfc.WriteLine(_prompt,ConsoleColor.Red);
-			while (true) {
-				cfc.WriteLine("Restart? Y/N");
-				string read_line = cfc.ReadLine();
-				if (read_line == null) continue;
-				string input = read_line.ToLower();
-				return input != "y";
 			}
 		}
 	}
