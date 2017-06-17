@@ -25,7 +25,7 @@ namespace ChemConsole {
 		}
 
 		public static bool ThrowError(string _prompt, string _question = "") {
-			WriteLine(_prompt, ConsoleColor.Red);
+			WriteLine(_prompt, ConsoleColor.Red, false);
 			switch (_question) {
 				case null:
 					return false;

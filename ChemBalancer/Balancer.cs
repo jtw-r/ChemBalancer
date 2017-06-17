@@ -6,7 +6,13 @@ using ChemConsole;
 
 namespace ChemBalancer {
 	public static class Balancer {
-		public static bool BalanceEquation(int _tollerence = 100) {
+
+		public enum UseType {
+			Balance,
+			Check
+		}
+
+		public static bool BalanceEquation(int _tollerence = 100, UseType _use = UseType.Balance) {
 			// Ask user for reactants and products.
 			var reactants = AskForCompounds("Reactants:");
 			var products = AskForCompounds("Products:");
@@ -63,7 +69,7 @@ namespace ChemBalancer {
 			int count = 0;
 			while (true) {
 				if (count > _tollerence) {
-					return ConsoleFunctions.ThrowError("Equation could not be balanced");
+					return _use != UseType.Check && ConsoleFunctions.ThrowError("Equation could not be balanced");
 				}
 
 				// A simple true/false to tell if the loop should stop.
@@ -80,6 +86,10 @@ namespace ChemBalancer {
 					
 					if (need == 0) continue; // Yay, this element was perfectly balanced!
 											 // Continue onto the next element in the table.
+
+					if (_use == UseType.Check) {
+						return false;
+					}
 
 					// Oh no, the element was not balanced. Tell the loop that
 					// it can't break yet.
@@ -126,7 +136,11 @@ namespace ChemBalancer {
 						// element that does not exist! That can't happen normally.
 						// Warn the user.
 						string side_value = side == 0 ? "reactant" : "product";
-						return ConsoleFunctions.ThrowError("ERROR in " + side_value + ".");
+						if (_use == UseType.Balance) {
+							return ConsoleFunctions.ThrowError("ERROR in " + side_value + ".");
+						}
+						ConsoleFunctions.ThrowError("ERROR in " + side_value + ".", null);
+						return false;
 					}
 
 					// The index of the element that we want to target in the
@@ -158,6 +172,9 @@ namespace ChemBalancer {
 
 				if (!can_break) continue;
 
+				if (_use == UseType.Check) {
+					return true;
+				}
 				// Yay! The loop can break, start the output process.
 				ConsoleFunctions.WriteLine("\n>Output:",ConsoleColor.Gray,false);
 
