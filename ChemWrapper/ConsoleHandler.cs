@@ -7,8 +7,8 @@ namespace ChemWrapper {
 	public class ConsoleHandler {
 
 		public ConsoleHandler() {
-			WriteLine("ChemBalancer\n(c) Copyright 2017");
-			WriteLine("\n> Type HELP for help");
+			WriteLine("ChemBalancer\n(c) Copyright 2017\n",ConsoleColor.Gray,false);
+			WriteLine("Type HELP for help");
 
 			Handler();
 		}
@@ -20,7 +20,7 @@ namespace ChemWrapper {
 				string line_input = ReadLine().ToLower();
 				switch (line_input) {
 					default:
-						WriteLine("> This command does not exits.", ConsoleColor.Yellow);
+						WriteLine("This command does not exits.", ConsoleColor.Yellow);
 						continue;
 					case "help":
 						WriteLines(new[] {

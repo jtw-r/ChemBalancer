@@ -7,15 +7,16 @@ using ChemConsole;
 namespace ChemBalancer {
 	public static class Checker {
 		public static void CheckEquation() {
-			bool was_balanced = Try();
-			if (was_balanced) {
+			string was_balanced = Try();
+			if (was_balanced == "true") {
 				ConsoleFunctions.WriteLine("Your equation is properaly balanced.", ConsoleColor.Green, false);
-			} else {
+			} else if(was_balanced != "exit") {
 				ConsoleFunctions.WriteLine("Your equation is NOT properaly balanced.", ConsoleColor.Yellow, false);
+				ConsoleFunctions.WriteLine(was_balanced, ConsoleColor.Yellow);
 			}
 		}
 
-		private static bool Try() {
+		private static string Try() {
 			// Ask user for reactants and products.
 			var reactants = AskForCompounds("Reactants:");
 			var products = AskForCompounds("Products:");
@@ -26,7 +27,7 @@ namespace ChemBalancer {
 
 			// Check if either reactants or products returned null,
 			// if so, exit because we can't do anything.
-			if (reactants == null || products == null) return true;
+			if (reactants == null || products == null) return "exit";
 
 			// Create a list that will represent each element non repeting.
 			var unique_elements = new List<string>();
@@ -47,28 +48,15 @@ namespace ChemBalancer {
 			// track of how many of each atom are in the equation on each side.
 			var balance_table = new int[unique_elements.Count, 2];
 
-			// This nested method will re-count all of the atoms and update the
-			// balance table.
-			Action recalc_balance_table = () => {
-				// Creates a new array because it's easier. I will probably change
-				// this later so that it does not and updates the value.
-				balance_table = new int[unique_elements.Count, 2];
-
-				for (int comp_index = 0; comp_index < comp.Length; comp_index++)
-				for (int component = 0; component < comp[comp_index].Count; component++)
-				for (int e = 0; e < comp[comp_index][component].Elements.Count; e++) {
-					int atom_count = comp[comp_index][component].Elements[e].Count * comp[comp_index][component].Multiplier;
-					int entry = unique_elements.FindIndex(comp[comp_index][component].Elements[e].Atom.Symbol.Equals);
-
-					balance_table[entry, comp_index] += atom_count;
-				}
-			};
-
 			// Calculate the balance table for the first time.
-			recalc_balance_table();
+			for (int comp_index = 0; comp_index < comp.Length; comp_index++)
+			for (int component = 0; component < comp[comp_index].Count; component++)
+			for (int e = 0; e < comp[comp_index][component].Elements.Count; e++) {
+				int atom_count = comp[comp_index][component].Elements[e].Count * comp[comp_index][component].Multiplier;
+				int entry = unique_elements.FindIndex(comp[comp_index][component].Elements[e].Atom.Symbol.Equals);
 
-			// This is the main loop! This loop cycles through the balance table
-			// works on balancing elements out.
+				balance_table[entry, comp_index] += atom_count;
+			}
 
 			// This loop cycles through the elements in the balance table.
 			for (int e = 0; e < balance_table.GetLength(0); e++) {
@@ -81,11 +69,13 @@ namespace ChemBalancer {
 				if (need == 0) continue; // Yay, this element was perfectly balanced!
 										 // Continue onto the next element in the table.
 
-				return false;
+				int side = need < 0 ? 0 : 1;
+				string side_value = side == 0 ? "reactant" : "product";
+				return "Try adjusting " + unique_elements[e] + " by " + Math.Abs(need) + " on the " + side_value + "s side.";
 			}
 
 			// Yes, it was successful! Return true.
-			return true;
+			return "true";
 		}
 
 		private static List<Compound> AskForCompounds(string _prompt) {
