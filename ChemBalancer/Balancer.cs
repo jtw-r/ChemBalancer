@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using static System.Console;
+using ChemConsole;
 
 namespace ChemBalancer {
 	public class Balancer {
+
+		private readonly ColourFormatConsole cfc = new ColourFormatConsole();
+
 		public bool BalanceEquation(int _tollerence = 100) {
 			// Ask user for reactants and products.
-			var reactants = AskForCompounds("> Reactants:");
-			var products = AskForCompounds("> Products:");
+			var reactants = AskForCompounds("Reactants:");
+			var products = AskForCompounds("Products:");
 
 			// Create an array that refrences the compounds for easy
 			// access with intagers.
@@ -27,7 +30,7 @@ namespace ChemBalancer {
 			for (int component = 0; component < comp[comp_index].Count; component++)
 			for (int e = 0; e < comp[comp_index][component].Elements.Count; e++) {
 				// Get the current atom that the for-loops are looking at.
-				string current_atom = comp[comp_index][component].Elements[e].Atom;
+				string current_atom = comp[comp_index][component].Elements[e].Atom.Symbol;
 				
 				// Check if the current element's symbol (H, N, Cl) is NOT already
 				// in the unique_elements list. If so, add it to the list!
@@ -49,7 +52,7 @@ namespace ChemBalancer {
 				for (int component = 0; component < comp[comp_index].Count; component++)
 				for (int e = 0; e < comp[comp_index][component].Elements.Count; e++) {
 					int atom_count = comp[comp_index][component].Elements[e].Count;
-					int entry = unique_elements.FindIndex(comp[comp_index][component].Elements[e].Atom.Equals);
+					int entry = unique_elements.FindIndex(comp[comp_index][component].Elements[e].Atom.Symbol.Equals);
 
 					balance_table[entry, comp_index] += atom_count;
 				}
@@ -63,18 +66,9 @@ namespace ChemBalancer {
 			int count = 0;
 			while (true) {
 				if (count > _tollerence) {
-					ForegroundColor = ConsoleColor.Red;
-					WriteLine("> Equation could not be balanced.");
-					ForegroundColor = ConsoleColor.Gray;
-					WriteLine("> Restart? Y/N");
-					ForegroundColor = ConsoleColor.White;
-					string read_line = ReadLine();
-					if (read_line != null) {
-						string input = read_line.ToLower();
-						ForegroundColor = ConsoleColor.Gray;
-						return input != "y";
-					}
+					return ThrowError("Equation could not be balanced");
 				}
+
 				// A simple true/false to tell if the loop should stop.
 				// Default is true then gets set false later if needed.
 				bool can_break = true;
@@ -115,8 +109,8 @@ namespace ChemBalancer {
 					for (int i = 0; i < comp[side].Count; i++) {
 						if (!comp[side][i].CheckFor(atom)) continue;
 						for (int el = 0; el < comp[side][i].Elements.Count; el++) {
-							if (comp[side][i].Elements[el].Atom != atom) continue; // This element was not the one we want :(
-																				   // Goto the next element in the compound.
+							if (comp[side][i].Elements[el].Atom.Symbol != atom) continue; // This element was not the one we want :(
+																						  // Goto the next element in the compound.
 							
 							// Yay! the selected element was the one we were looking
 							// for, break the loop so that it doesn't continue.
@@ -135,15 +129,7 @@ namespace ChemBalancer {
 						// element that does not exist! That can't happen normally.
 						// Warn the user.
 						string side_value = side == 0 ? "reactant" : "product";
-						ForegroundColor = ConsoleColor.Red;
-						WriteLine("> ERROR in " + side_value + ".");
-						ForegroundColor = ConsoleColor.Gray;
-						// Ask the user if they would like to try again.
-						WriteLine("> Restart? Y/N");
-						ForegroundColor = ConsoleColor.White;
-						string input = ReadLine().ToLower();
-						ForegroundColor = ConsoleColor.Gray;
-						return input != "y";
+						return ThrowError("ERROR in " + side_value + ".");
 					}
 
 					// The index of the element that we want to target in the
@@ -152,7 +138,7 @@ namespace ChemBalancer {
 
 					// Find the element's index.
 					for (int el = 0; el < occurances[0].Elements.Count; el++) {
-						if (occurances[0].Elements[el].Atom != atom) continue;
+						if (occurances[0].Elements[el].Atom.Symbol != atom) continue;
 
 						// Oh good, it found it. Set occurance to equal the index
 						// then stop the loop.
@@ -176,7 +162,7 @@ namespace ChemBalancer {
 				if (!can_break) continue;
 
 				// Yay! The loop can break, start the output process.
-				WriteLine("\n>Output:");
+				cfc.WriteLine("\n>Output:",ConsoleColor.Gray,false);
 
 				// Create an array for the reactant and product output.
 				var output = new[] {"", ""};
@@ -190,19 +176,18 @@ namespace ChemBalancer {
 
 					// Append the compounds multiplyer than the origional value;
 					// 2NaO^4Xe^2
-					output[comp_index] += comp[comp_index][component].GetMultiplier() + comp[comp_index][component].Full;
+					output[comp_index] += comp[comp_index][component].GetMultiplier() + comp[comp_index][component].FullEquation;
 				}
 
 				// Finally, output the final values in bright yellow.
-				ForegroundColor = ConsoleColor.Yellow;
-				WriteLine(output[0] + " >>> " + output[1]);
-				ForegroundColor = ConsoleColor.Gray;
+				cfc.WriteLine(output[0] + " >>> " + output[1],ConsoleColor.Yellow,false);
 				break;
 			}
+			// Yes, it was successful! Return true.
 			return true;
 		}
 
-		internal int DivideAndUpdate(int _a, int _b) {
+		private static int DivideAndUpdate(int _a, int _b) {
 			// If _a/_b is less than 1 then double _a until _a/_b is greater than 1.
 			while (_a / _b < 1) _a += _a;
 
@@ -210,12 +195,10 @@ namespace ChemBalancer {
 			return _a;
 		}
 
-		internal List<Compound> AskForCompounds(string _prompt) {
+		private List<Compound> AskForCompounds(string _prompt) {
 			while (true) {
-				WriteLine(_prompt);
-				ForegroundColor = ConsoleColor.White;
-				string input = ReadLine();
-				ForegroundColor = ConsoleColor.Gray;
+				cfc.WriteLine(_prompt);
+				string input = cfc.ReadLine();
 
 				if (input == null) continue;
 				switch (input.ToLower()) {
@@ -229,6 +212,17 @@ namespace ChemBalancer {
 					case "":
 						return null;
 				}
+			}
+		}
+
+		private bool ThrowError(string _prompt) {
+			cfc.WriteLine(_prompt,ConsoleColor.Red);
+			while (true) {
+				cfc.WriteLine("Restart? Y/N");
+				string read_line = cfc.ReadLine();
+				if (read_line == null) continue;
+				string input = read_line.ToLower();
+				return input != "y";
 			}
 		}
 	}

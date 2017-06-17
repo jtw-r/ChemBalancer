@@ -1,34 +1,36 @@
 ﻿using System;
 using ChemBalancer;
 using ChemAtoms;
+using ChemConsole;
 
 namespace ChemWrapper {
 	public class ConsoleHandler {
 
+		ColourFormatConsole cfc = new ColourFormatConsole();
 		private AtomView cAtomView;
 		private Balancer cBalancer;
 
 		public ConsoleHandler() {
-			Console.WriteLine("ChemBalancer\n(c) Copyright 2017");
-			Console.WriteLine("\n> Type HELP for help");
+			cfc.WriteLine("ChemBalancer\n(c) Copyright 2017");
+			cfc.WriteLine("\n> Type HELP for help");
 
 			Handler();
 		}
 
 		internal void Handler() {
 			while (true) {
-				Console.WriteLine("> Command:");
-				Console.ForegroundColor = ConsoleColor.White;
-				string line_input = Console.ReadLine().ToLower();
-				Console.ForegroundColor = ConsoleColor.Gray;
+				cfc.WriteLine("Command:");
+				string line_input = cfc.ReadLine().ToLower();
 				switch (line_input) {
 					default:
-						Console.WriteLine("> This command does not exits.");
+						cfc.WriteLine("> This command does not exits.", ConsoleColor.Yellow);
 						continue;
 					case "help":
-						Console.WriteLine("> Balance - the command to balance an equation.\n" +
-						                  "> [Does not exits]Check - the command to check if an equation is balanced correct.\n" +
-										  "> [WIP]Atom Info - the command to show information on a specific atom.");
+						cfc.WriteLines(new[] {
+							"Balance - the command to balance an equation.\n",
+							"[Does not exits]Check - the command to check if an equation is balanced correct.\n",
+							"[WIP]Atom Info - the command to show information on a specific atom."
+						});
 						break;
 					case "balance":
 						cBalancer = new Balancer();
@@ -42,10 +44,10 @@ namespace ChemWrapper {
 						cAtomView.ShowDialog();
 						break;
 					case "exit":
-						Console.Write("Have a nice day!");
+						cfc.WriteLine("Have a nice day!",ConsoleColor.Gray,false);
 						return;
 				}
-				Console.WriteLine();
+				cfc.WriteLine("",ConsoleColor.Gray,false);
 			}
 		}
 	}

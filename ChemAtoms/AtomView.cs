@@ -55,13 +55,5 @@ namespace ChemAtoms {
 			lb_atomShells.Text = atom.ElectronShells + "";
 			lb_atomValence.Text = atom.ValenceElectrons + "";
 		}
-
-		private void lb_atomSymbol_Click(object sender, EventArgs e) {
-
-		}
-
-		private void lb_atomName_Click(object sender, EventArgs e) {
-
-		}
 	}
 }

@@ -58,6 +58,10 @@
       <Project>{91bbf254-0e7a-4dbe-9222-08aa79e639af}</Project>
       <Name>ChemAtoms</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ChemConsole\ChemConsole.csproj">
+      <Project>{482c78a8-846e-4f21-8f67-5bfde42dc415}</Project>
+      <Name>ChemConsole</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -8,10 +8,10 @@ namespace ChemBalancer {
 		public List<Element> Elements = new List<Element>();
 		public int Multiplier { private set; get; }
 
-		public string Full { get; }
+		public string FullEquation { get; }
 
 		public Compound(string _formula) {
-			Full = _formula;
+			FullEquation = _formula;
 
 			var parenthesis = Regex.Split(_formula, "(?>[(])");
 
@@ -47,10 +47,6 @@ namespace ChemBalancer {
 			}
 		}
 
-		public void DoTheOtherSplit(string _formula) {
-			
-		}
-
 		public void ReUp(int _times) {
 			Multiplier += Math.Abs(_times);
 
@@ -63,7 +59,7 @@ namespace ChemBalancer {
 		public bool CheckFor(string _atom) {
 			bool found = false;
 			for (int e = 0; e < Elements.Count; e++) {
-				if (Elements[e].Atom != _atom) continue;
+				if (Elements[e].Atom.Symbol != _atom) continue;
 				found = true;
 			}
 			return found;
