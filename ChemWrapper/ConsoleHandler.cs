@@ -15,12 +15,13 @@ namespace ChemWrapper {
 
 		private static void Handler() {
 			bool devMode = false;
+			bool balance_notif = false;
 			while (true) {
 				WriteLine("Command:");
 				string line_input = ReadLine().ToLower();
 				switch (line_input) {
 					default:
-						WriteLine("This command does not exits.", ConsoleColor.Yellow);
+						WriteLine("This command does not exist.", ConsoleColor.Yellow);
 						continue;
 					case "help":
 						WriteLines(new[] {
@@ -31,7 +32,8 @@ namespace ChemWrapper {
 						break;
 					case "balance":
 						while (true) {
-							if (Balancer.BalanceEquation() == false) continue;
+							if (Balancer.BalanceEquation(balance_notif) == false) continue;
+							balance_notif = true;
 							break;
 						}
 						break;

@@ -6,7 +6,8 @@ namespace ChemAtoms{
 
 		public enum SearchType {
 			Name,
-			Symbol
+			Symbol,
+			Polyatomic
 		};
 
 		public string Symbol { get; } // Atom's symbol: H, Xe, Cl
@@ -38,6 +39,9 @@ namespace ChemAtoms{
 					data = new AtomData().FindAtomBySymbol(_input);
 					Symbol = _input;
 					break;
+				case SearchType.Polyatomic:
+					Symbol = _input;
+					return;
 				default:
 					ConsoleFunctions.ThrowError("Search Type: " + _search_type + " is not valid", null);
 					throw new ArgumentOutOfRangeException(nameof(_search_type), _search_type, null);

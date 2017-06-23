@@ -7,7 +7,20 @@ using ChemConsole;
 namespace ChemBalancer {
 	public static class Balancer {
 
-		public static bool BalanceEquation(int _tollerence = 100) {
+		public static bool BalanceEquation( bool _notified, int _tollerence = 100) {
+			// Only show the starting message once.
+			// Checks if the message has already been shown.
+			if (_notified == false) {
+				ConsoleFunctions.WriteLines(
+					new[] {
+						"",
+						"PLEASE wrap all polyatomic ions in ()",
+						"EXAMPLE: (NO^3)^2 or (ClO)",
+						"PLEASE use the caret ^ symbol for the subscript numbers",
+						"EXAMPLE: CO^2 or H^2O"
+					}, false, new []{ConsoleColor.Yellow});
+			}
+
 			// Ask user for reactants and products.
 			var reactants = AskForCompounds("Reactants:");
 			var products = AskForCompounds("Products:");

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ChemConsole {
 	public static class ConsoleFunctions {
@@ -11,12 +9,20 @@ namespace ChemConsole {
 			else Console.WriteLine("> " + _input);
 		}
 
-		public static void WriteLines(IEnumerable<string> _input, bool _insert_start = true) {
-			Console.ForegroundColor = ConsoleColor.Gray;
-			_input.ToList().ForEach(_item => {
-				if (_insert_start) Console.WriteLine("> " + _item);
-				else Console.WriteLine(_item);
-			});
+		public static void WriteLines(string[] _input, bool _insert_start = true, ConsoleColor[] _color = null) {
+			for (int i = 0; i < _input.Length; i++) {
+				if (_color == null) Console.ForegroundColor = ConsoleColor.Gray;
+				else {
+					if (_color.Length >= i + 1) {
+						Console.ForegroundColor = _color[i];
+					} else if (_color.Length == 1) {
+						Console.ForegroundColor = _color[0];
+					}
+				}
+
+				if (_insert_start) Console.WriteLine("> " + _input[i]);
+				else Console.WriteLine(_input[i]);
+			}
 		}
 
 		public static string ReadLine() {

@@ -8,8 +8,10 @@ namespace ChemBalancer {
 		public int BaseCount { get; }
 		public int Count { private set; get; }
 
-		public Element(string _atom, int _count) {
-			Atom = new Atom(Regex.Replace(_atom,"([0-9]+^)",""));
+		public Element(string _atom, int _count, bool _polyatomic = false) {
+			Atom = _polyatomic
+				? new Atom(Regex.Replace(_atom, "([0-9]+^)", ""), Atom.SearchType.Polyatomic)
+				: new Atom(Regex.Replace(_atom, "([0-9]+^)", ""));
 			BaseCount = _count;
 			Count = _count;
 		}
