@@ -25,10 +25,10 @@ namespace ChemWrapper {
 						continue;
 					case "help":
 						WriteLines(new[] {
-							"Balance - the command to balance an equation.\n",
-							"Check - the command to check if an equation is balanced correct.\n",
+							"\nBalance - the command to balance an equation.",
+							"Check - the command to check if an equation is balanced correct.",
 							"Atom Info - the command to show information on a specific atom."
-						});
+						},false,new []{ConsoleColor.Green});
 						break;
 					case "balance":
 						while (true) {

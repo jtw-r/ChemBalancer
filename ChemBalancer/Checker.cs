@@ -9,10 +9,10 @@ namespace ChemBalancer {
 		public static void CheckEquation() {
 			string was_balanced = Try();
 			if (was_balanced == "true") {
-				ConsoleFunctions.WriteLine("Your equation is properaly balanced.", ConsoleColor.Green, false);
-			} else if(was_balanced != "exit") {
-				ConsoleFunctions.WriteLine("Your equation is NOT properaly balanced.", ConsoleColor.Yellow, false);
-				ConsoleFunctions.WriteLine(was_balanced, ConsoleColor.Yellow);
+				ConsoleFunctions.WriteLine("\nYour equation is properaly balanced.", ConsoleColor.Green, false);
+			} else if (was_balanced != "exit") {
+				ConsoleFunctions.WriteLine("\nYour equation is NOT properaly balanced.", ConsoleColor.Yellow, false);
+				ConsoleFunctions.WriteLine(was_balanced, ConsoleColor.Yellow, false);
 			}
 		}
 
