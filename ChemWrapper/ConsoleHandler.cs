@@ -1,51 +1,61 @@
 ﻿using System;
-using ChemBalancer;
 using ChemAtoms;
+using ChemBalancer;
+using static ChemConsole.ConsoleFunctions;
 
 namespace ChemWrapper {
 	public class ConsoleHandler {
 
-		private AtomView cAtomView;
-		private Balancer cBalancer;
-
 		public ConsoleHandler() {
-			Console.WriteLine("ChemBalancer\n(c) Copyright 2017");
-			Console.WriteLine("\n> Type HELP for help");
+			WriteLine("ChemBalancer\n(c) Copyright 2017\n",ConsoleColor.Gray,false);
+			WriteLine("Type HELP for help");
 
 			Handler();
 		}
 
-		internal void Handler() {
+		private static void Handler() {
+			bool devMode = false;
+			bool balance_notif = false;
 			while (true) {
-				Console.WriteLine("> Command:");
-				Console.ForegroundColor = ConsoleColor.White;
-				string line_input = Console.ReadLine().ToLower();
-				Console.ForegroundColor = ConsoleColor.Gray;
+				WriteLine("Command:");
+				string line_input = ReadLine().ToLower();
 				switch (line_input) {
 					default:
-						Console.WriteLine("> This command does not exits.");
+						WriteLine("This command does not exist.", ConsoleColor.Yellow);
 						continue;
 					case "help":
-						Console.WriteLine("> Balance - the command to balance an equation.\n" +
-						                  "> [Does not exits]Check - the command to check if an equation is balanced correct.\n" +
-										  "> [WIP]Atom Info - the command to show information on a specific atom.");
+						WriteLines(new[] {
+							"\nBalance - the command to balance an equation.",
+							"Check - the command to check if an equation is balanced correct.",
+							"Atom Info - the command to show information on a specific atom."
+						},false,new []{ConsoleColor.Green});
 						break;
 					case "balance":
-						cBalancer = new Balancer();
 						while (true) {
-							if (cBalancer.BalanceEquation() == false) continue;
+							if (Balancer.BalanceEquation(balance_notif) == false) continue;
+							balance_notif = true;
 							break;
 						}
 						break;
+					case "check":
+						Checker.CheckEquation();
+						break;
+					case "-dev":
+						WriteLine("Entered Dev Mode", ConsoleColor.Yellow, false);
+						devMode = true;
+						break;
 					case "atom info":
-						cAtomView = new AtomView();
-						cAtomView.ShowDialog();
+						new AtomView().ShowDialog();
+						break;
+					case "-exit":
+						WriteLine("Exited Dev Mode", ConsoleColor.Yellow, false);
+						devMode = false;
 						break;
 					case "exit":
-						Console.Write("Have a nice day!");
+						WriteLine("Have a nice day!", ConsoleColor.Gray, false);
 						return;
 				}
-				Console.WriteLine();
+				WriteLine("", ConsoleColor.Gray, false);
 			}
 		}
 	}

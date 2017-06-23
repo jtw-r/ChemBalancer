@@ -37,8 +37,6 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.lb_atomShells = new System.Windows.Forms.Label();
 			this.lb_atomPosition = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.lb_atomValence = new System.Windows.Forms.Label();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -53,7 +51,6 @@
 			this.lb_atomSymbol.TabIndex = 1;
 			this.lb_atomSymbol.Text = "Sy";
 			this.lb_atomSymbol.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-			this.lb_atomSymbol.Click += new System.EventHandler(this.lb_atomSymbol_Click);
 			// 
 			// lb_atomName
 			// 
@@ -65,7 +62,6 @@
 			this.lb_atomName.TabIndex = 2;
 			this.lb_atomName.Text = "Name";
 			this.lb_atomName.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-			this.lb_atomName.Click += new System.EventHandler(this.lb_atomName_Click);
 			// 
 			// lb_atomNumber
 			// 
@@ -94,7 +90,6 @@
 			this.tableLayoutPanel1.ColumnCount = 2;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel1.Controls.Add(this.label5, 0, 5);
 			this.tableLayoutPanel1.Controls.Add(this.lb_atomElectrons, 1, 2);
 			this.tableLayoutPanel1.Controls.Add(this.lb_atomNeutrons, 1, 1);
 			this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
@@ -103,7 +98,6 @@
 			this.tableLayoutPanel1.Controls.Add(this.lb_atomProtons, 1, 0);
 			this.tableLayoutPanel1.Controls.Add(this.label4, 0, 4);
 			this.tableLayoutPanel1.Controls.Add(this.lb_atomShells, 1, 4);
-			this.tableLayoutPanel1.Controls.Add(this.lb_atomValence, 1, 5);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 117);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -232,32 +226,6 @@
 			this.lb_atomPosition.Text = "(Position)";
 			this.lb_atomPosition.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
-			// label5
-			// 
-			this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(3, 62);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(121, 20);
-			this.label5.TabIndex = 8;
-			this.label5.Text = "Valence Electrons:";
-			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// lb_atomValence
-			// 
-			this.lb_atomValence.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.lb_atomValence.AutoSize = true;
-			this.lb_atomValence.Location = new System.Drawing.Point(130, 62);
-			this.lb_atomValence.Name = "lb_atomValence";
-			this.lb_atomValence.Size = new System.Drawing.Size(122, 20);
-			this.lb_atomValence.TabIndex = 9;
-			this.lb_atomValence.Text = "# Valence Electrons";
-			this.lb_atomValence.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
 			// AtomView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -295,7 +263,5 @@
 		private System.Windows.Forms.Label lb_atomPosition;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label lb_atomShells;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Label lb_atomValence;
 	}
 }

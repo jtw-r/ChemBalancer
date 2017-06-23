@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace ChemBalancer {
-	class Compound {
+	internal class Compound {
+		// I'm not even going to bother documenting this file right now.
 
-		public List<Element> Elements = new List<Element>();
+		public readonly List<Element> Elements = new List<Element>();
 		public int Multiplier { private set; get; }
 
-		public string Full { get; }
+		public string FullEquation { get; }
 
 		public Compound(string _formula) {
-			Full = _formula;
+			FullEquation = _formula;
 
 			var parenthesis = Regex.Split(_formula, "(?>[(])");
 
@@ -20,18 +22,24 @@ namespace ChemBalancer {
 					var parenthesis_end = Regex.Split(parenthesis[p], "(?<=[)])");
 
 					string parenthesis_num = Regex.Match(parenthesis_end[1], "([0-9]+)").Value;
-					string parenthesis_without = parenthesis[p].Remove(parenthesis[p].IndexOf(")", StringComparison.Ordinal));
+					if (parenthesis_num == "") {
+						parenthesis_num = "1";
+					}
 
-					CreateElements(parenthesis_without, Convert.ToInt32(parenthesis_num));
-					_formula = _formula.Remove(_formula.IndexOf("(" + parenthesis_without + ")^" + parenthesis_num,
-						StringComparison.Ordinal));
+					string parenthesis_without = parenthesis[p].Remove(parenthesis[p].IndexOf(")", StringComparison.Ordinal));
+					
+					Elements.Add(new Element(parenthesis_without,Convert.ToInt32(parenthesis_num),true));
+					_formula = parenthesis_num != "1"
+						? _formula.Remove(_formula.IndexOf("(" + parenthesis_without + ")^" + parenthesis_num,
+							StringComparison.Ordinal))
+						: _formula.Remove(_formula.IndexOf("(" + parenthesis_without + ")", StringComparison.Ordinal));
 				}
 			}
 
 			CreateElements(_formula);
 		}
 
-		public void CreateElements(string _formula, int _mult = 1) {
+		private void CreateElements(string _formula, int _mult = 1) {
 			var input = Regex.Split(_formula, "(?=[A-Z])");
 
 			string check_multip = Regex.Match(input[0], "([0-9]+)").Value;
@@ -47,10 +55,11 @@ namespace ChemBalancer {
 			}
 		}
 
-		public void DoTheOtherSplit(string _formula) {
-			
-		}
-
+		/// <summary>
+		/// Multiplies the base number and adds it to the element.
+		/// NOT overiding the base number.
+		/// </summary>
+		/// <param name="_times"></param>
 		public void ReUp(int _times) {
 			Multiplier += Math.Abs(_times);
 
@@ -60,22 +69,27 @@ namespace ChemBalancer {
 
 		}
 
+		/// <summary>
+		/// Checks to see if an atom is in this compound.
+		/// </summary>
+		/// <param name="_atom"></param>
+		/// <returns>[true/false] If said atom is in this compound</returns>
 		public bool CheckFor(string _atom) {
-			bool found = false;
-			for (int e = 0; e < Elements.Count; e++) {
-				if (Elements[e].Atom != _atom) continue;
-				found = true;
-			}
-			return found;
+			return Elements.Any(_t => _t.Atom.Symbol == _atom);
 		}
 
+		/// <summary>
+		/// Returns the compounds multiplier.
+		/// 2H^2O
+		/// </summary>
+		/// <returns></returns>
 		public string GetMultiplier() {
-			string returned = "";
+			// I would have just had it return the raw multiplier in
+			// string form but I wanted it to output nothing if the
+			// multiplier was equal to 1.
 
-			if (Multiplier == 1) return returned;
-			returned = Multiplier + "";
-
-			return returned;
+			if (Multiplier == 1) return "";
+			return Multiplier + "";
 		}
 
 	}

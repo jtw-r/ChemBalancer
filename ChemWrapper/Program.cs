@@ -6,7 +6,5 @@ namespace ChemWrapper {
 		public static void Main() {
 			var console = new ConsoleHandler();
 		}
-
-		
 	}
 }

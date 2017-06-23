@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ChemConsole;
 
 namespace ChemAtoms {
 	internal class AtomData {
@@ -121,7 +122,13 @@ namespace ChemAtoms {
 		}
 
 		public Tuple<string, int, float, int, int, int> FindAtomBySymbol(string _symbol) {
-			return data[_symbol];
+			try {
+				return data[_symbol];
+			}
+			catch (KeyNotFoundException) {
+				ConsoleFunctions.ThrowError("The atom "+_symbol+" does not exist.",null);
+				return data.Values.FirstOrDefault();
+			}
 		}
 
 		public KeyValuePair<string, Tuple<string, int, float, int, int, int>> FindAtomByName(string _name) {
